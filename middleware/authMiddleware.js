@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 
-import User from '../models/User.js'
+import User from "../models/User.js";
+import Role from "../models/Role.js";
+import Permission from "../models/Permission.js";
 
 const protect = async (
   req,
@@ -35,14 +37,19 @@ const protect = async (
 
       )
 
-      const user =
-        await User.findById(
-          decoded.id
-        ).select('-password')
-
+      // const user =
+      //   await User.findById(
+      //     decoded.id
+      //   ).select('-password')
+const user = await User.findById(decoded.id)
+.populate({
+    path:"role",
+    populate:{
+        path:"permissions"
+    }
+})
+.select("-password");
        
-      // IMPORTANT
-
       if (!user) {
 
         return res.status(401).json({
@@ -58,14 +65,13 @@ const protect = async (
       next()
 
     } catch (error) {
-
-      return res.status(401).json({
-
-        message:
-          'Not Authorized'
-
-      })
-    }
+  console.error(error);
+  console.error(error.message);
+  return res.status(401).json({
+    success: false,
+    message: error.message,
+  });
+}
 
   } else {
 

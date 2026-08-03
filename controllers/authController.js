@@ -1,6 +1,7 @@
 import User from '../models/User.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import Role from '../models/Role.js'
 
 const generateToken = (id) => {
 
@@ -33,6 +34,7 @@ export const registerUser = async (req, res) => {
 
     const userExists = await User.findOne({ email })
     const phoneExists = await User.findOne({ phone })
+    const roleExists = await Role.findOne({ code: 'PATIENT' })
 
     if (userExists || phoneExists) {
 
@@ -48,9 +50,11 @@ export const registerUser = async (req, res) => {
       salt
     )
 
+
     const user = await User.create({
       name,
       email,
+      role: roleExists._id,
       password: hashedPassword,
       phone
     })

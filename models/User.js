@@ -22,17 +22,11 @@ phone: {
       required: true
     },
 
-    role: {
-      type: String,
-      enum: [
-        'admin',
-        'patient',
-        'lab_assistant',
-        'lab_owner',
-        
-      ],
-      default: 'patient'
-    },
+   role: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Role",
+  required: true,
+},
     labOwner: {
 
   type:
@@ -88,6 +82,5 @@ resetOtpExpire: {
   }
 )
 
-const User = mongoose.model('User', userSchema)
-
-export default User
+export default mongoose.models.User ||
+  mongoose.model("User", userSchema);

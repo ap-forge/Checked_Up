@@ -69,12 +69,6 @@
           payloadMain +
           "/pg/v1/pay" +
           process.env.SALT_KEY;
-
-          console.log(
-          "Payload:",
-          process.env.SALT_KEY,
-        );
-
         const xVerify =
           sha256(key) +
           "###" +
@@ -104,11 +98,6 @@
               },
             }
           );
-
-        console.log(
-          response.data
-        );
-
         const phonepeUrl =
           response.data.data
             .instrumentResponse
@@ -123,11 +112,6 @@
           });
 
       } catch (error) {
-
-        console.log(
-          error.response?.data ||
-          error.message
-        );
 
         return res.status(500)
           .json({
@@ -166,10 +150,6 @@
       }
     );
 
-    console.log(
-      JSON.stringify(response.data, null, 2)
-    );
-
     const booking = await Booking.findOne({
       transactionId: txnId,
     });
@@ -182,17 +162,6 @@
 
     const paymentState =
       response?.data?.data?.state;
-
-    console.log(
-  "Full PhonePe Response:",
-  JSON.stringify(response.data, null, 2)
-);
-
-console.log(
-  "Payment State:",
-  response?.data?.data?.state
-);
-
     // SUCCESS
     if (paymentState === "COMPLETED") {
 
@@ -226,9 +195,7 @@ console.log(
     );
 
   } catch (error) {
-    console.log(
-      error.response?.data || error.message
-    );
+    console.error(error);
     return res.redirect(
       `${process.env.FRONT_END_URL}/lab-assistant?payment=error`
     );
